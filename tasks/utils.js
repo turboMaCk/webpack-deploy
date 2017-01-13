@@ -9,6 +9,7 @@ var fullname = require('fullname');
 var argv = require('yargs').string('rev').argv;
 
 var CONFIG_FILENAME = 'deploy-config.js';
+var REVISION_HASH_LENGTH = 10;
 
 function requireConfig(filename) {
   gutil.log('Using config file ' + gutil.colors.magenta(filename));
@@ -37,7 +38,9 @@ module.exports.hash = function() {
 
 module.exports.getRevision = function(cb) {
   if (typeof argv.rev === 'string' && argv.rev !== 'current' && cb) cb(argv.rev);
-  else revision.short(cb);
+  else revision.long(function (rev) {
+    cb(rev.substr(0, REVISION_HASH_LENGTH));
+  });
 };
 
 module.exports.getConfigFor = function(prop) {
